@@ -107,6 +107,32 @@
     )       
 )
 
+(defun select_delete (db pairs)
+    (let ((result ()) (allrows (get db 'ROWS)) (rows (get db 'ROWS)) (columns (get db' COLUMNS)) row)
+        (loop
+            (if (NULL rows) (return result))
+            (setq row (car rows))
+            (let ((ppairs pairs) (matches T) colname filter value)
+                (loop
+                    (if (NULL ppairs)
+                        (if matches 
+                            (return NIL)
+                            (return (setq result (append result (list row))))
+                        )
+                    )
+                    (setq colname (nth 0 (car ppairs)))
+                    (setq filter (nth 1 (car ppairs)))
+                    (setq value (get_value db colname row))
+                    (if (funcall (eval filter) value) T (setq matches NIL))
+                    (setq ppairs (cdr ppairs))
+                )
+            )
+            (setq rows (cdr rows))
+        )
+        (put db 'ROWS result)
+    )
+)
+
 (defun select (db pairs)
     (let ((result ()) (rows (get db 'ROWS)) (columns (get db' COLUMNS)) row)
         (loop

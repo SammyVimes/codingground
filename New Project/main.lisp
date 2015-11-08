@@ -101,6 +101,30 @@
     )
 )
 
+(defun f23b (cars soldcars enginenum)
+    (let ((pr (list (append (list 'ENGINE_NUMBER) (list enginenum)))) match result CAR_ID tmpres)
+        (setq match (select_equals cars pr))
+        (loop
+            (if (NULL match) (return result))
+            (setq CAR_ID (get_value cars 'ID (car match)))
+            (select_delete soldcars (list (predicate 'ID_EXTERNAL 
+                                        ((LAMBDA (CAR_ID) 
+                                            (LAMBDA (VAL) (string= val CAR_ID))) CAR_ID)
+                                   )
+                              )
+            )
+            (select_delete cars (list (predicate 'ID 
+                                        ((LAMBDA (CAR_ID) 
+                                            (LAMBDA (VAL) (string= val CAR_ID))) CAR_ID)
+                                   )
+                              )
+            )
+            (setq result (append result tmpres))
+            (setq match (cdr match))
+        )
+    )
+)
+
 (setq TCARS 'CARS)
 (setq TCARSSOLD 'CARS_SOLD)
 (create_db TCARS '(
@@ -116,7 +140,7 @@
     (PRICE "Cena" T)
     )
 )
-(create_new_row TCARS '("1" "Mitsubishi Gallardo NFS Edition " "150" "R123" "24.09.2011" "Yaponia" "Hatchback" "Dark black" "5" "2500000"))
+(create_new_row TCARS '("1" "Mitsubishi Gallardo NFS Edition" "150" "R123" "24.09.2011" "Yaponia" "Hatchback" "Dark black" "5" "2500000"))
 (create_new_row TCARS '("2" "Mitsubishy Lancer Huevolution" "155" "R125" "4.5.2015" "Yaponia" "Pickup" "White" "3" "1750000"))
 (create_new_row TCARS '("3" "Lada 2110" "250" "ART1" "17.10.1892" "Russia" "Sedan" "Red" "13" "100000"))
 (create_new_row TCARS '("4" "Lada Priora" "200" "ARG65" "5.8.1965" "Russia" "Sedan" "White" "3" "200000"))
@@ -132,6 +156,7 @@
 (create_new_row TCARSSOLD '("3" "1" "Alexandro" "15.10.2014"))
 (create_new_row TCARSSOLD '("4" "4" "Alexandro" "25.12.2014"))
 (create_new_row TCARSSOLD '("5" "4" "Alexandro" "7.2.2015"))
+(create_new_row TCARSSOLD '("6" "3" "Jesper" "17.11.2003"))
 
 (print (f21b TCARS TCARSSOLD "Lada Priora" "1.1.1965" "1.1.2016"))
 (print (f21blen TCARS TCARSSOLD "Lada Priora" "1.1.1965" "1.1.2016"))
@@ -140,6 +165,13 @@
 (print (f22a TCARS "3" "10" "152" "201"))
 (print (f22b TCARS TCARSSOLD "1.1.1965" "1.1.2016"))
 (print (f23a TCARS "Yaponia"))
+(write-line "")
+(write-line "Testing deletion")
+(print (select TCARS NIL))
+(print (select TCARSSOLD NIL))
+(f23b TCARS TCARSSOLD "ART1")
+(print (select TCARS NIL))
+(print (select TCARSSOLD NIL))
 
 ;(print (get db 'COLUMNS))
 ;(print (get db 'ROWS))
