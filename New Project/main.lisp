@@ -58,6 +58,37 @@
     )
 )
 
+(defun f22b (cars soldcars date1 date2)
+    (let ((match (select cars NIL)) result CAR_ID tmpres)
+        (loop
+            (if (NULL match) (return result))
+            (setq CAR_ID (get_value cars 'ID (car match)))
+            (setq MARKA (get_value cars 'MANUFACTURER (car match)))
+            (setq tmpres
+                (select soldcars (append (list
+                                            (predicate 'ID_EXTERNAL ((LAMBDA (CAR_ID) 
+                                                                            (LAMBDA (VAL) (string= val CAR_ID)) 
+                                                                      ) CAR_ID
+                                                                    )
+                                            )
+                                         )
+                                         (list
+                                            (predicate 'BUY_DATE ((LAMBDA (DATE1 DATE2) 
+                                                                            (LAMBDA (VAL) (date_between val DATE1 DATE2)) 
+                                                                      ) date1 DATE2
+                                                                  )
+                                            )
+                                         )
+                                 )
+                )
+            )
+            (setq CAR_ID (get_value cars 'ID (car match)))
+            (setq result (append result (list (list MARKA (length tmpres)))))
+            (setq match (cdr match))
+        )
+    )
+)
+
 (setq TCARS 'CARS)
 (setq TCARSSOLD 'CARS_SOLD)
 (create_db TCARS '(
@@ -95,6 +126,7 @@
 (print (f22a TCARS "3" "15" "152" "251"))
 (print (f22a TCARS "3" "10" "152" "251"))
 (print (f22a TCARS "3" "10" "152" "201"))
+(print (f22b TCARS TCARSSOLD "1.1.1965" "1.1.2016"))
 
 ;(print (get db 'COLUMNS))
 ;(print (get db 'ROWS))
