@@ -87,8 +87,8 @@
     (put db 'ROWS ())
 )
 
-(defun get_value (columns col_name row)
-    (let ((columns columns) (i 0))
+(defun get_value (db col_name row)
+    (let ((columns (get db' COLUMNS)) (i 0))
         (loop
             (if (NULL columns) (return NIL))
             (if (eql (car columns) col_name)
@@ -122,7 +122,7 @@
                     )
                     (setq colname (nth 0 (car ppairs)))
                     (setq filter (nth 1 (car ppairs)))
-                    (setq value (get_value columns colname row))
+                    (setq value (get_value db colname row))
                     (if (funcall (eval filter) value) T (setq matches NIL))
                     (setq ppairs (cdr ppairs))
                 )
@@ -177,6 +177,13 @@
 (defun date_between (cur l r)
     (if (or (= (date_bigger l cur) 1) (= (date_bigger l cur) 0))
         (if (or (= (date_bigger r cur) -1) (= (date_bigger r cur) 0)) T NIL)
+        NIL
+    )
+)
+
+(defun integer_between (cur l r)
+    (if (or (= l cur) (> cur l))
+        (if (or (= r cur) (> r cur)) T NIL)
         NIL
     )
 )
