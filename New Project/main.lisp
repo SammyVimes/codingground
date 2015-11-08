@@ -89,6 +89,18 @@
     )
 )
 
+(defun f23a (cars country)
+    (let ((match (select_equals cars (list (append (list 'COUNTRY) (list country))))) result)
+        (loop
+            (if (NULL match) (return result))
+            (setq MARKA (get_value cars 'MANUFACTURER (car match)))
+            (setq POWER (get_value cars 'ENGINE_POWER (car match)))
+            (setq result (append result (list (list MARKA POWER))))
+            (setq match (cdr match))
+        )
+    )
+)
+
 (setq TCARS 'CARS)
 (setq TCARSSOLD 'CARS_SOLD)
 (create_db TCARS '(
@@ -127,6 +139,7 @@
 (print (f22a TCARS "3" "10" "152" "251"))
 (print (f22a TCARS "3" "10" "152" "201"))
 (print (f22b TCARS TCARSSOLD "1.1.1965" "1.1.2016"))
+(print (f23a TCARS "Yaponia"))
 
 ;(print (get db 'COLUMNS))
 ;(print (get db 'ROWS))
@@ -139,6 +152,7 @@
 ;(print "Lets go to next row")
 ;(print (user_create_new_row db))
 ;(print (select db '((ID (LAMBDA (val) (string= val "2"))) (MODEL (LAMBDA (val) (string= val "KOPEYKA")))))) ;unit-test for simple select
+;(print (select db '((COUNTRY (LAMBDA (val) (string= val "RUSSIA")))))) ;unit-test for simple select
 ;(print (get db 'ROWS))
 ;(print (get_value (get db 'COLUMNS) 'NAME (nth 0 (get db 'ROWS)))) ;checking get_value
 ;(print (select_equals db '((ID "2") (MODEL "KOPEYKA")))) ;unit-test for select-equals
