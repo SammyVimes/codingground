@@ -185,6 +185,33 @@
     )
 )
 
+(defun read_file (file_name)
+    (setq in (open file_name))
+    (setq result '())
+    (loop 
+	    (setq line (read in nil))
+		(cond					        ;CHECKING FOR INPUT END..
+			( (null line) (close in)(return result) )	;IF INPUT ENDS - REVOKE THE INPUT FILE ('DISCONNECT FROM DB')
+		)
+		(setq result (append result (list line)))
+	)
+)
+
+;returns new db
+(defun load_db (db columns_file rows_file)
+    ;CREATE EMPTY DB
+	(create_db db (read_file columns_file))
+	;FILLING DB FROM FILE
+	(setq rows (read_file rows_file))
+	(do 					    
+		( (i 0 (+ i 1)) )							
+		( (= i (length rows)))				
+		( create_new_row db (nth i rows) )    
+	)
+	db
+)
+
+
 (defun date_bigger (l r)
     (let ((left (split-str l ".")) (right (split-str r ".")) (i 0) (val 0) curL curR)
         (loop
