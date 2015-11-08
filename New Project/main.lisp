@@ -176,6 +176,9 @@
 (f23b TCARS TCARSSOLD "ART1")
 (print (select TCARS NIL))
 (print (select TCARSSOLD NIL))
+(print (user_create_new_row TCARS))
+(save_db TCARS "cars_new.txt")
+(save_db TCARSSOLD "saled_cars_new.txt")
 
 ;(print (get db 'COLUMNS))
 ;(print (get db 'ROWS))

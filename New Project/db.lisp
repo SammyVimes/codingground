@@ -211,6 +211,17 @@
 	db
 )
 
+(defun save_db (db file_name)
+    (setq out (open file_name :direction :output :if-exists :supersede))
+    (setq rows (get db 'ROWS))
+    (do 
+        ( (i 0 (+ i 1)) )	
+        ( (= i (length rows)))	
+        ( write-line  (write-to-string (nth i rows)) out)
+    )
+    (close out)
+)
+
 
 (defun date_bigger (l r)
     (let ((left (split-str l ".")) (right (split-str r ".")) (i 0) (val 0) curL curR)
